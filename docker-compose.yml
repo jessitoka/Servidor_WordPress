@@ -1,0 +1,34 @@
+# Archivo docker-compose.yml para orquestar una instalación de WordPress
+
+version: '3.8' # Especificamos la versión de Docker Compose
+
+services:
+  # Servicio de base de datos
+  db:
+    image: mysql:5.7 # Utilizamos la imagen oficial de MySQL en su versión 5.7
+    volumes:
+      - db_data:/var/lib/mysql # Montamos un volumen para persistir los datos de la base de datos
+    environment: 
+      MYSQL_ROOT_PASSWORD: example_root_password # Configuramos la contraseña del usuario root
+      MYSQL_DATABASE: wordpress # Creamos una base de datos específica para WordPress
+      MYSQL_USER: wordpress_user # Creamos un usuario de base de datos para WordPress
+      MYSQL_PASSWORD: example_password # Definimos la contraseña del usuario de WordPress
+
+  # Servicio de WordPress
+  wordpress:
+    image: wordpress:latest # Utilizamos la imagen oficial de WordPress
+    depends_on:
+      - db # Indicamos que el servicio de WordPress depende del servicio de base de datos (db)
+    ports:
+      - "8000:80" # Mapeamos el puerto 80 del contenedor al puerto 8000 en la máquina host para acceder a WordPress
+    environment:
+      WORDPRESS_DB_HOST: db:3306 # Dirección y puerto del servicio de base de datos
+      WORDPRESS_DB_USER: wordpress_user # Usuario que configuramos para la base de datos en MySQL
+      WORDPRESS_DB_PASSWORD: example_password # Contraseña que configuramos para el usuario de la base de datos
+      WORDPRESS_DB_NAME: wordpress # Nombre de la base de datos que configuramos en el servicio de MySQL
+    volumes:
+      - wordpress_data:/var/www/html # Montamos un volumen para persistir los datos de WordPress
+
+volumes:
+  db_data: # Definimos un volumen persistente para los datos de MySQL
+  wordpress_data: # Definimos un volumen persistente para los archivos de WordPress
