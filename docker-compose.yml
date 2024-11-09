@@ -1,7 +1,3 @@
-# Archivo docker-compose.yml para orquestar una instalación de WordPress
-
-#version: '3.8' # Especificamos la versión de Docker Compose
-
 services:
   # Servicio de base de datos
   db:
